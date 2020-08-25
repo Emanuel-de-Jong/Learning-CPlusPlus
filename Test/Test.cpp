@@ -21,7 +21,8 @@ bool checkStringConvertableToUnsignedInt(const string& str)
 }
 
 
-unsigned int askPositiveNumber(const string& question) {
+unsigned int askPositiveNumber(const string& question)
+{
     cout << question << "\n";
 
     string answer;
@@ -39,7 +40,8 @@ unsigned int askPositiveNumber(const string& question) {
 
 
 // loops through string array, appending all strings with 'stringLength' amount of characters to list
-void addArrElementsOfStringLengthToList(const string source[], list<string> &target, unsigned int sourceSize, unsigned int stringLength) {
+void addArrElementsOfStringLengthToList(const string source[], list<string> &target, unsigned int sourceSize, unsigned int stringLength)
+{
     for (unsigned int i = 0; i < sourceSize; i++) {
         if (source[i].size() == stringLength) target.push_back(source[i]);
     }
@@ -47,7 +49,8 @@ void addArrElementsOfStringLengthToList(const string source[], list<string> &tar
 
 
 // main game
-void guessWord(const string &word, unsigned int chances) {
+void guessWord(const string &word, unsigned int chances)
+{
     cout << word;
 }
 
