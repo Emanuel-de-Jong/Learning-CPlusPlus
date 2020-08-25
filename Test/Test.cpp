@@ -9,7 +9,7 @@
 using namespace std;
 
 
-bool checkStringConvertableToUnsignedInt(const string& str)
+bool checkStringConvertableToUnsignedInt(const string &str)
 {
     if (str.empty()) return false;
 
@@ -21,7 +21,7 @@ bool checkStringConvertableToUnsignedInt(const string& str)
 }
 
 
-unsigned int askPositiveNumber(const string& question)
+unsigned int askPositiveNumber(const string &question)
 {
     cout << question << "\n";
 
