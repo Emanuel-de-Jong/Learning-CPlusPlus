@@ -6,11 +6,16 @@
 #include <string>
 #include <list> 
 #include <time.h>
+#include <vector>
+#include <fstream>
+#include <algorithm>
+#include <map>
 
 using std::cout;
 using std::cin;
 using std::string;
 using std::list;
+using std::vector;
 
 
 bool checkStringConvertableToUnsignedInt(const string &str)
@@ -52,8 +57,28 @@ void addArrElementsOfStringLengthToList(const string source[], list<string> &tar
 }
 
 
+void readCsv(const string &filename, vector<string> &vect) {
+    std::ifstream file(filename);
+
+    if (!file.is_open()) throw std::runtime_error("Could not open file");
+    if (!file.good()) throw std::runtime_error("File stream has errors");
+
+    string value;
+
+    while (getline(file, value, ','))
+    {
+        vect.push_back(value);
+    }
+
+    file.close();
+}
+
+
+bool sortByWordSize(string i, string j) { return (i.size() < j.size()); }
+
+
 // main game 
-void guessWord(const string &word, unsigned int chances)
+void guessWord(const string& word, unsigned int chances)
 {
     cout << "Word: " << word << "\nChances: " << chances << "\n";
     //system("pause");
@@ -63,6 +88,24 @@ void guessWord(const string &word, unsigned int chances)
 int main()
 {
     srand(time(NULL));
+
+    vector<string> words;
+    readCsv("Words.csv", words);
+    std::sort(words.begin(), words.end(), sortByWordSize);
+
+    std::map<int, int> wordLengths;
+    int wordLengthTemp;
+    for (auto& it : words) {
+        wordLengthTemp = (int)it.size();
+        if (wordLengths.find(wordLengthTemp) != wordLengths.end()) {
+            wordLengths[wordLengthTemp] += 1;
+        }
+        else {
+            wordLengths[wordLengthTemp] = 1;
+        }
+    }
+
+
 
     string wordArr[] = { "not", "what", "all", "were", "we", "when", "your", "can", "said", "there", "use", "an", "each", "which", "she", "do", "how", "their", "if", "will", "up", "other", "about", "out", "many", "then", "them", "these", "so", "some", "her", "would", "make", "like", "him", "into", "time", "has", "look", "two", "more", "write", "go", "see", "number", "no", "way", "could", "people", "my", "than", "first", "water", "been", "call", "who", "oil", "its", "now", "find", "long", "down", "day", "did", "get", "come", "made", "may", "part" };
     unsigned int wordArrSize = sizeof(wordArr) / sizeof(wordArr[0]);
