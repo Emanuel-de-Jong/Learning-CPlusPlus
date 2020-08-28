@@ -4,19 +4,14 @@
 
 #include <iostream>
 #include <string>
-#include <list> 
 #include <time.h>
 #include <vector>
 #include <fstream>
-#include <algorithm>
 #include <map>
 
 using std::cout;
 using std::cin;
 using std::string;
-using std::list;
-using std::vector;
-
 
 bool checkStringConvertableToUnsignedInt(const string &str)
 {
@@ -25,39 +20,28 @@ bool checkStringConvertableToUnsignedInt(const string &str)
     for (const char &c : str) {
         if (!isdigit(c)) return false;
     }
-    
+
     return true;
 }
-
 
 unsigned int askUnsignedInterger(const string &question)
 {
     cout << question << "\n";
 
     string answer;
-    bool conditionResult;
-    // loops until input is valid
-    do {
-        cin >> answer;
+    cin >> answer;
 
-        conditionResult = !checkStringConvertableToUnsignedInt(answer);
-        if (conditionResult) cout << "Choose a positive interger\n";
-    } while (conditionResult);
-
-    return stoul(answer);
-}
-
-
-// loops through string array, appending all strings with 'stringLength' amount of characters to list
-void addArrElementsOfStringLengthToList(const string source[], list<string> &target, unsigned int sourceSize, unsigned int stringLength)
-{
-    for (unsigned int i = 0; i < sourceSize; i++) {
-        if (source[i].size() == stringLength) target.push_back(source[i]);
+    if (checkStringConvertableToUnsignedInt(answer)) {
+        return stoul(answer);
+    }
+    else {
+        throw "Input is not a positive number";
     }
 }
 
 
-void readCsv(const string &filename, vector<string> &vect) {
+void readCsv(const string &filename, std::map<const unsigned int, std::vector<string>> &words)
+{
     std::ifstream file(filename);
 
     if (!file.is_open()) throw std::runtime_error("Could not open file");
@@ -67,17 +51,13 @@ void readCsv(const string &filename, vector<string> &vect) {
 
     while (getline(file, value, ','))
     {
-        vect.push_back(value);
+        words[value.size()].push_back(value);
     }
 
     file.close();
 }
 
 
-bool sortByWordSize(string i, string j) { return (i.size() < j.size()); }
-
-
-// main game 
 void guessWord(const string& word, unsigned int chances)
 {
     cout << "Word: " << word << "\nChances: " << chances << "\n";
@@ -89,44 +69,31 @@ int main()
 {
     srand(time(NULL));
 
-    vector<string> words;
+    std::map<const unsigned int, std::vector<string>> words;
     readCsv("Words.csv", words);
-    std::sort(words.begin(), words.end(), sortByWordSize);
-
-    std::map<int, int> wordLengths;
-    int wordLengthTemp;
-    for (auto& it : words) {
-        wordLengthTemp = (int)it.size();
-        if (wordLengths.find(wordLengthTemp) != wordLengths.end()) {
-            wordLengths[wordLengthTemp] += 1;
-        }
-        else {
-            wordLengths[wordLengthTemp] = 1;
-        }
-    }
-
-
-
-    string wordArr[] = { "not", "what", "all", "were", "we", "when", "your", "can", "said", "there", "use", "an", "each", "which", "she", "do", "how", "their", "if", "will", "up", "other", "about", "out", "many", "then", "them", "these", "so", "some", "her", "would", "make", "like", "him", "into", "time", "has", "look", "two", "more", "write", "go", "see", "number", "no", "way", "could", "people", "my", "than", "first", "water", "been", "call", "who", "oil", "its", "now", "find", "long", "down", "day", "did", "get", "come", "made", "may", "part" };
-    unsigned int wordArrSize = sizeof(wordArr) / sizeof(wordArr[0]);
 
     unsigned int wordLength;
-    list<string> wordChoiceArr;
-    bool conditionResult;
-    // loops until the user chooses a wordLength that occurs in the wordArr
-    do {
-        wordLength = askUnsignedInterger("Choose the length of the word to guess:");
-        addArrElementsOfStringLengthToList(wordArr, wordChoiceArr, wordArrSize, wordLength);
+    string question = "Choose the length of the word to guess (possible options are:";
+    for (auto const& wl : words) {
+        question += " " + std::to_string(wl.first);
+    }
+    question += "):";
 
-        conditionResult = wordChoiceArr.empty();
+    bool conditionResult;
+    do {
+        try {
+            wordLength = askUnsignedInterger(question);
+        }
+        catch (string error) {
+            cout << error;
+        }
+
+        conditionResult = words.count(wordLength) ;
         if (conditionResult) cout << "There are no words of length " << wordLength << "\n\n";
     } while (conditionResult);
     cout << "\n";
     
-    // chooses a random index in the wordChoiceArr as the word to guess
-    list<string>::iterator wordIt = wordChoiceArr.begin();
-    advance(wordIt, rand() % (wordChoiceArr.size() - 1));
-    string word = *wordIt;
+    string word = words[wordLength][rand() % (words.size() - 1)];
 
     unsigned int chances = askUnsignedInterger("Choose the amount of times you can guess:");
     cout << "\n";
