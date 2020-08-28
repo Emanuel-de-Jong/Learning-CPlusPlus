@@ -6,7 +6,11 @@
 #include <string>
 #include <list> 
 #include <time.h>
-using namespace std;
+
+using std::cout;
+using std::cin;
+using std::string;
+using std::list;
 
 
 bool checkStringConvertableToUnsignedInt(const string &str)
@@ -48,10 +52,11 @@ void addArrElementsOfStringLengthToList(const string source[], list<string> &tar
 }
 
 
-// main game
+// main game 
 void guessWord(const string &word, unsigned int chances)
 {
-    cout << word << "\n" << chances;
+    cout << "Word: " << word << "\nChances: " << chances << "\n";
+    //system("pause");
 }
 
 
