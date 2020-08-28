@@ -21,7 +21,7 @@ bool checkStringConvertableToUnsignedInt(const string &str)
 }
 
 
-unsigned int askPositiveNumber(const string &question)
+unsigned int askUnsignedInterger(const string &question)
 {
     cout << question << "\n";
 
@@ -32,7 +32,7 @@ unsigned int askPositiveNumber(const string &question)
         cin >> answer;
 
         conditionResult = !checkStringConvertableToUnsignedInt(answer);
-        if (conditionResult) cout << "Choose a valid number\n";
+        if (conditionResult) cout << "Choose a positive interger\n";
     } while (conditionResult);
 
     return stoul(answer);
@@ -51,7 +51,7 @@ void addArrElementsOfStringLengthToList(const string source[], list<string> &tar
 // main game
 void guessWord(const string &word, unsigned int chances)
 {
-    cout << word;
+    cout << word << "\n" << chances;
 }
 
 
@@ -67,7 +67,7 @@ int main()
     bool conditionResult;
     // loops until the user chooses a wordLength that occurs in the wordArr
     do {
-        wordLength = askPositiveNumber("Choose the length of the word to guess:");
+        wordLength = askUnsignedInterger("Choose the length of the word to guess:");
         addArrElementsOfStringLengthToList(wordArr, wordChoiceArr, wordArrSize, wordLength);
 
         conditionResult = wordChoiceArr.empty();
@@ -80,7 +80,7 @@ int main()
     advance(wordIt, rand() % (wordChoiceArr.size() - 1));
     string word = *wordIt;
 
-    unsigned int chances = askPositiveNumber("Choose the amount of times you can guess:");
+    unsigned int chances = askUnsignedInterger("Choose the amount of times you can guess:");
     cout << "\n";
     guessWord(word, chances);
 
