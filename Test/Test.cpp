@@ -25,7 +25,7 @@ void readCsv(const string& filename, map<unsigned int, vector<string>>& values)
 
     string value;
     while (getline(file, value, ',')) {
-        values[value.size()].push_back(value);
+        values[value.size()].push_back(value);  // values[size of string][vector of strings with that size]
     }
 
     file.close();
@@ -43,12 +43,14 @@ bool checkStringToUnsignedInt(const string &str)
     return true;
 }
 
+
 unsigned int askUnsignedInt(const string &question)
 {
     cout << question << "\n";
 
     string answer;
     bool conditionResult;
+    // loops untill the user input passes checkStringToUnsignedInt
     do {
         cin >> answer;
 
@@ -60,6 +62,7 @@ unsigned int askUnsignedInt(const string &question)
 }
 
 
+// main game
 void guessWord(const string word, unsigned int chances)
 {
     cout << "Word: " << word << "\nChances: " << chances << "\n";
@@ -71,10 +74,12 @@ int main()
 {
     srand(time(NULL));
 
+    // reads all the words in Words.csv and sorts them by length in 'words'
     map<unsigned int, vector<string>> words;
     readCsv("Words.csv", words);
 
     string question = "Choose the length of the word to guess (possible options are:";
+    // appends 'question' with all keys (word lengths) in 'words'
     for (const std::pair<const unsigned int, vector<string>> &pair : words) {
         question += " " + std::to_string(pair.first);
     }
@@ -82,6 +87,7 @@ int main()
 
     unsigned int wordLength;
     bool conditionResult;
+    // loops untill the user input is a word length existent in 'words'
     do {
         wordLength = askUnsignedInt(question);
 
@@ -90,7 +96,9 @@ int main()
     } while (!conditionResult);
     cout << "\n";
     
+    // chooses a random index in the vector at words[wordLength]
     const string word = words[wordLength][rand() % (words[wordLength].size() - 1)];
+
     unsigned int chances = askUnsignedInt("Choose the amount of times you can guess:");
     cout << "\n";
     guessWord(word, chances);
