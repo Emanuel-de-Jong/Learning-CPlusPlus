@@ -27,20 +27,6 @@ void readCsv(const string& filename, map<unsigned int, vector<string>>& values)
     while (getline(file, value, ',')) {
         values[value.size()].push_back(value);  // values[size of string][vector of strings with that size]
     }
-
-    file.close();
-}
-
-
-bool checkStringToUnsignedInt(const string& str)
-{
-    if (str.empty()) return false;
-
-    for (const char& c : str) {
-        if (!isdigit(c)) return false;
-    }
-
-    return true;
 }
 
 
@@ -48,17 +34,17 @@ unsigned int askUnsignedInt(const string& question)
 {
     cout << question << "\n";
 
-    string answer;
-    bool conditionResult;
-    // loops untill the user input passes checkStringToUnsignedInt
-    do {
-        cin >> answer;
+    unsigned int answer;
+    string line;
+    // loops untill the user input is an unsigned int
+    while (!(cin >> answer))
+    {
+        cin.clear();
+        getline(std::cin, line);
+        cout << "Input is not a positive number\n";
+    }
 
-        conditionResult = checkStringToUnsignedInt(answer);
-        if (!conditionResult) cout << "Input is not a positive number\n";
-    } while (!conditionResult);
-
-    return stoul(answer);
+    return answer;
 }
 
 
