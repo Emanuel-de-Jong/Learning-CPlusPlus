@@ -72,14 +72,10 @@ int main()
     question += "):";
 
     unsigned int wordLength;
-    bool conditionResult;
     // loops untill the user input is a word length existent in 'words'
-    do {
-        wordLength = askUnsignedInt(question);
-
-        conditionResult = words.count(wordLength) ;
-        if (!conditionResult) cout << "There are no words of length " << wordLength << "\n\n";
-    } while (!conditionResult);
+    while ((wordLength = askUnsignedInt(question)) && !words.count(wordLength)) {
+        cout << "There are no words of length " << wordLength << "\n\n";
+    }
     cout << "\n";
     
     // chooses a random index in the vector at words[wordLength]
