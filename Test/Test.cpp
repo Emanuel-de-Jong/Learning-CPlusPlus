@@ -32,11 +32,11 @@ void readCsv(const string& filename, map<unsigned int, vector<string>>& values)
 }
 
 
-bool checkStringToUnsignedInt(const string &str)
+bool checkStringToUnsignedInt(const string& str)
 {
     if (str.empty()) return false;
 
-    for (const char &c : str) {
+    for (const char& c : str) {
         if (!isdigit(c)) return false;
     }
 
@@ -44,7 +44,7 @@ bool checkStringToUnsignedInt(const string &str)
 }
 
 
-unsigned int askUnsignedInt(const string &question)
+unsigned int askUnsignedInt(const string& question)
 {
     cout << question << "\n";
 
@@ -80,7 +80,7 @@ int main()
 
     string question = "Choose the length of the word to guess (possible options are:";
     // appends 'question' with all keys (word lengths) in 'words'
-    for (const std::pair<const unsigned int, vector<string>> &pair : words) {
+    for (const std::pair<const unsigned int, vector<string>>& pair : words) {
         question += " " + std::to_string(pair.first);
     }
     question += "):";
