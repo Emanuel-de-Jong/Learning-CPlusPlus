@@ -1,89 +1,152 @@
-/*
- *      Word guessing game.
- */
-
 #include <iostream>
-#include <time.h>
 #include <string>
-#include <map>
+#include <algorithm>
+#include <iterator>
+#include <ctime>
 #include <vector>
-#include <fstream>
+#include <sstream>
 
-using std::cout;
 using std::cin;
+using std::cout;
 using std::string;
-using std::map;
-using std::vector;
 
-
-void readCsv(const string& filename, map<unsigned int, vector<string>>& values)
-{
-    std::ifstream file(filename);
-
-    if (!file.is_open()) throw std::runtime_error("Could not open file");
-    if (!file.good()) throw std::runtime_error("File stream has errors");
-
-    string value;
-    while (getline(file, value, ',')) {
-        values[value.size()].push_back(value);  // values[size of string][vector of strings with that size]
+void removeUnwantedChars(string& expr) {
+    int end = expr.size();
+    char c;
+    char wantedChars[] = { '(', ')', '{', '}', '[', ']', '+', '-', '*', '/' };
+    for (int i = 0; i < end; i++) {
+        char c = expr[i];
+        if (!std::isdigit(c) && std::find(std::begin(wantedChars), std::end(wantedChars), c) == std::end(wantedChars)) {
+            expr.erase(i, 1);
+            i--;
+            end--;
+        }
     }
 }
 
+void addParentheses(string& expr) {
+    char c;
+    for (int i = 0; i < expr.size(); i++) {
+        c = expr[i];
+        if (c == '*' || c == '/') {
 
-unsigned int askUnsignedInt(const string& question)
-{
-    cout << question << "\n";
+        }
+    }
+}
 
-    unsigned int answer;
-    string line;
-    // loops untill the user input is an unsigned int
-    while (!(cin >> answer))
+void infixToPostfix(string& expr) {
+    char c;
+    char oper = NULL;
+    for (int i = 0; i < expr.size(); i++) {
+        c = expr[i];
+
+        if (c == '*' || c == '/') {
+            oper = c;
+            expr[i] = ',';
+            i++;
+        }
+        else if (c == ')') {
+            expr.insert(i, string(1, oper));
+            i += 3;
+        }
+    }
+}
+
+void removeParentheses(string& expr) {
+    int end = expr.size();
+    char parentheses[] = { '(', ')', '{', '}', '[', ']' };
+    for (int i = 0; i < end; i++) {
+        if (std::find(std::begin(parentheses), std::end(parentheses), expr[i]) != std::end(parentheses)) {
+            expr.erase(i, 1);
+            i--;
+            end--;
+        }
+    }
+}
+
+string calcPostfix(string& operand1, string& operand2, char oper) {
+    string sum;
+    if (oper == '*') {
+        sum = std::to_string(stoi(operand1) * stoi(operand2));
+    }
+    else if (oper == '/') {
+        sum = std::to_string(stoi(operand1) / stoi(operand2));
+    }
+
+    return sum;
+}
+
+int calcExpresion(string& originalExpr) {
+    string expr = originalExpr;
+    string operand1;
+    string operand2;
+    char c;
+    int i = 0;
+    int prevI = 0;
+    while (i != expr.size()) {
+        for (i = 0; i < expr.size(); i++) {
+            c = expr[i];
+
+            if (c == ',') {
+                operand1 = operand2;
+                operand2 = "";
+            }
+            else if (c == '*' || c == '/') {
+                break;
+            }
+            else {
+                operand2.push_back(c);
+            }
+        }
+
+        cout << operand1 << "\t"
+            << operand2 << "\t"
+            << c << "\t"
+            << expr << "\n";
+
+        if (i != expr.size()) {
+            cout << prevI << "\t"
+                << ((i - prevI) + 1) << "\t"
+                << (i - 1) << "\t"
+                << calcPostfix(operand1, operand2, c) << "\n\n";
+
+            expr.erase(prevI, ((i - prevI) + 1));
+            prevI = (i - 1);
+
+            expr.insert(0, ",");
+            expr.insert(0, calcPostfix(operand1, operand2, c));
+        }
+    }
+
+    expr.pop_back();
+
+    int total = 0;
+    std::stringstream exprStream(expr);
+    string numb;
+    while (exprStream.good())
     {
-        cin.clear();
-        getline(std::cin, line);
-        cout << "Input is not a positive number\n";
+        getline(exprStream, numb, ',');
+        cout << numb << " ";
+        total += stoi(numb);
     }
 
-    return answer;
+    cout << "\n\n";
+
+    return total;
 }
-
-
-// main game
-void guessWord(const string word, unsigned int chances)
-{
-    cout << "Word: " << word << "\nChances: " << chances << "\n";
-    //system("pause");
-}
-
 
 int main()
 {
-    srand(time(NULL));
+    clock_t time = clock();
 
-    // reads all the words in Words.csv and sorts them by length in 'words'
-    map<unsigned int, vector<string>> words;
-    readCsv("Words.csv", words);
+    string expr = "(15 * 52)(1655 / 5)(13 * 5)(2 * 5)(4 / 4)";
+    removeUnwantedChars(expr);
+    addParentheses(expr);
+    infixToPostfix(expr);
+    removeParentheses(expr);
+    int total = calcExpresion(expr);
 
-    string question = "Choose the length of the word to guess (possible options are:";
-    // appends 'question' with all keys (word lengths) in 'words'
-    for (const std::pair<const unsigned int, vector<string>>& pair : words) {
-        question += " " + std::to_string(pair.first);
-    }
-    question += "):";
-
-    unsigned int wordLength;
-    // loops untill the user input is a word length existent in 'words'
-    while ((wordLength = askUnsignedInt(question)) && !words.count(wordLength)) {
-        cout << "There are no words of length " << wordLength << "\n\n";
-    }
-    cout << "\n";
-    
-    // chooses a random index in the vector at words[wordLength]
-    const string word = words[wordLength][rand() % (words[wordLength].size() - 1)];
-
-    unsigned int chances = askUnsignedInt("Choose the amount of times you can guess:");
-    cout << "\n";
-    guessWord(word, chances);
-
-    return 0;
+    cout << expr << "\n"
+        << total << "\n"
+        << clock() - time << "\n";
 }
