@@ -147,10 +147,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="HashTable.cpp" />
     <ClCompile Include="Test.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Words.csv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
