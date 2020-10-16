@@ -1,29 +1,29 @@
 #include <string>
-#include <functional>
 #include <list>
+#include <functional>
 
 using std::string;
 using std::list;
 
-//template<typename Key, typename Value>
+template<typename Key, typename Value>
 struct Pair {
-	string key;
-	int value;
+	Key key;
+	Value value;
 };
 
-//template<typename Key, typename Value>
+template<typename Key, typename Value>
 class HashTable {
 private:
 	static const int valuesLen = 100;
-	list<Pair*> values[valuesLen];
-	std::hash<string> hash;
+	list<Pair<Key, Value>*> values[valuesLen];
+	std::hash<Key> hash;
 	
-	int getIndex(string key) {
+	int getIndex(Key key) {
 		return hash(key) % valuesLen;
 	}
 
-	Pair* getPairWithKey(list<Pair*> element, string key) {
-		for (Pair* pair : element) {
+	Pair<Key, Value>* getPairWithKey(list<Pair<Key, Value>*> element, Key key) {
+		for (Pair<Key, Value>* pair : element) {
 			if (pair->key == key) {
 				return pair;
 			}
@@ -34,21 +34,30 @@ public:
 	HashTable() {}
 
 	~HashTable() {
-		for (list<Pair*> element : values) {
-			for (Pair* pair : element) {
+		for (list<Pair<Key, Value>*> element : values) {
+			for (Pair<Key, Value>* pair : element) {
 				delete pair;
 			}
 		}
 	}
 
-	void set(string key, int value) {
+	Value get(Key key) {
+		Pair<Key, Value>* currentPair = getPairWithKey(values[getIndex(key)], key);
+		if (currentPair) {
+			return currentPair->value;
+		}
+
+		return NULL;
+	}
+
+	void set(Key key, Value value) {
 		int index = getIndex(key);
-		Pair* currentPair = getPairWithKey(values[index], key);
+		Pair<Key, Value>* currentPair = getPairWithKey(values[index], key);
 		if (currentPair) {
 			currentPair->value = value;
 		}
 		else {
-			Pair* newPair = new Pair();
+			Pair<Key, Value>* newPair = new Pair<Key, Value>();
 			newPair->key = key;
 			newPair->value = value;
 
@@ -56,12 +65,13 @@ public:
 		}
 	}
 
-	int get(string key) {
-		Pair* currentPair = getPairWithKey(values[getIndex(key)], key);
-		if (currentPair) {
-			return currentPair->value;
+	void del(Key key) {
+		int index = getIndex(key);
+		for (Pair<Key, Value>* pair : values[index]) {
+			if (pair->key == key) {
+				values[index].remove(pair);
+				break;
+			}
 		}
-
-		return NULL;
 	}
 };
