@@ -76,7 +76,7 @@ string calcPostfix(string& operand1, string& operand2, char oper) {
     return sum;
 }
 
-int calcExpresion(string& originalExpr) {
+int calcExpression(string& originalExpr) {
     string expr = originalExpr;
     string operand1;
     string operand2;
@@ -144,7 +144,7 @@ int main()
     addParentheses(expr);
     infixToPostfix(expr);
     removeParentheses(expr);
-    int total = calcExpresion(expr);
+    int total = calcExpression(expr);
 
     cout << expr << "\n"
         << total << "\n"
