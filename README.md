@@ -1,8 +1,8 @@
 # Learning C++
 Projects to learn (advanced topics in) C++.
 
-**Active Development:** <br>
-**Last Change:** <br>
+**Active Development:** 2020-08-25 - 2020-08-29<br>
+**Last Change:** 2020-10-16<br>
 
 | | |
 | :---: | :---: |
